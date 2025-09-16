@@ -118,6 +118,7 @@ class SignatureMethod(FragmentLookupMixin, InvalidInputErrorMixin, Enum):
     SHA256_RSA_MGF1 = "http://www.w3.org/2007/05/xmldsig-more#sha256-rsa-MGF1"
     SHA384_RSA_MGF1 = "http://www.w3.org/2007/05/xmldsig-more#sha384-rsa-MGF1"
     SHA512_RSA_MGF1 = "http://www.w3.org/2007/05/xmldsig-more#sha512-rsa-MGF1"
+    EDDSA_ED25519 = "http://www.w3.org/2021/04/xmldsig-more#eddsa-ed25519"
 
     DSA_SHA1 = "http://www.w3.org/2000/09/xmldsig#dsa-sha1"
     """
@@ -198,5 +199,6 @@ digest_algorithm_implementations: Dict[Union[DigestAlgorithm, SignatureMethod], 
     SignatureMethod.SHA256_RSA_MGF1: hashes.SHA256,
     SignatureMethod.SHA384_RSA_MGF1: hashes.SHA384,
     SignatureMethod.SHA512_RSA_MGF1: hashes.SHA512,
+    SignatureMethod.EDDSA_ED25519: hashes.SHA256,
     SignatureMethod.SHA1_RSA_MGF1: hashes.SHA1,
 }
