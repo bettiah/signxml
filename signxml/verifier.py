@@ -5,7 +5,7 @@ from warnings import warn
 
 import cryptography.exceptions
 from cryptography import x509
-from cryptography.hazmat.primitives.asymmetric import dsa, ec, rsa, utils
+from cryptography.hazmat.primitives.asymmetric import dsa, ec, rsa, utils, ed25519
 from cryptography.hazmat.primitives.asymmetric.padding import MGF1, PSS, AsymmetricPadding, PKCS1v15
 from cryptography.hazmat.primitives.hmac import HMAC
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat, load_der_public_key
@@ -165,6 +165,10 @@ class XMLVerifier(XMLSignatureProcessor):
                 raise InvalidInput("DER encoded key value does not match specified signature algorithm")
             signature_for_ecdsa = self._encode_dss_signature(raw_signature, key.key_size)
             key.verify(signature_for_ecdsa, data=signed_info_c14n, signature_algorithm=ec.ECDSA(digest_alg_impl))
+        elif signature_alg is SignatureMethod.EDDSA_ED25519:
+            if not isinstance(key, ed25519.Ed25519PublicKey):
+                raise InvalidInput("DER encoded key value does not match specified signature algorithm")
+            key.verify(raw_signature, signed_info_c14n)
         elif signature_alg.name.startswith("DSA_"):
             if key_value is not None:
                 dsa_key_value = self._find(key_value, "DSAKeyValue")
