@@ -255,6 +255,8 @@ class XMLSigner(XMLSignatureProcessor):
             signer.update(signed_info_c14n)
             signature_value_node.text = b64encode(signer.finalize()).decode()
             sig_root.append(signature_value_node)
+        elif self.sign_alg.name == "EDDSA_ED25519":
+            signature = signing_settings.key.sign(signed_info_c14n)
         elif any(self.sign_alg.name.startswith(i) for i in ["DSA_", "RSA_", "ECDSA_", "SHA"]):
             hash_alg = digest_algorithm_implementations[self.sign_alg]()
             if self.sign_alg.name.startswith("DSA_"):
