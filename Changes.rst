@@ -1,3 +1,34 @@
+Changes for v4.4.0 (2026-03-01)
+===============================
+
+- Forbid DTD declarations in XML input
+
+- Avoid deprecated method importlib.resources.open_text
+
+Changes for v4.3.1 (2026-02-17)
+===============================
+
+- Fix comparison logic for ECDSA public keys (#290)
+
+Changes for v4.3.0 (2026-02-14)
+===============================
+
+- Remove registration for ec.SECT\* ECDSA curves (#289)
+
+- Fix key info matching behavior (#287)
+
+Changes for v4.2.2 (2026-01-21)
+===============================
+
+- Support default namespace with no xmlns=“” undeclarations in
+  sign/verify round-trip (#286)
+
+Changes for v4.2.1 (2026-01-18)
+===============================
+
+- Add legacy SigningCertificate with IssuerSerial for XAdES
+  interoperability (#282)
+
 Changes for v4.2.0 (2025-08-19)
 ===============================
 
