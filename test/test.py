@@ -1085,6 +1085,32 @@ class TestXAdES(unittest.TestCase, LoadExampleKeys):
         self.assertIsInstance(verify_results[1], XAdESVerifyResult)
         self.assertTrue(hasattr(verify_results[1], "signed_properties"))
 
+    def test_xades_roundtrip_with_cert_chain(self):
+        cert, key = self.load_example_keys()
+        with open(os.path.join(os.path.dirname(__file__), "example-ca.pem"), "rb") as fh:
+            ca_cert = fh.read()
+        with open(os.path.join(os.path.dirname(__file__), "example.xml"), "rb") as fh:
+            doc = etree.parse(fh)
+        signer = XAdESSigner(
+            signature_policy=self.signature_policy,
+            claimed_roles=self.claimed_roles,
+            data_object_format=self.data_object_format,
+        )
+        signed_doc = signer.sign(doc, key=key, cert=[cert, ca_cert])
+
+        self.assertEqual(2, len(signed_doc.findall(".//ds:X509Certificate", namespaces=namespaces)))
+        self.assertEqual(
+            2,
+            len(signed_doc.findall(".//xades:SigningCertificateV2/xades:Cert", namespaces=namespaces)),
+        )
+
+        verifier = XAdESVerifier()
+        verify_results = verifier.verify(
+            signed_doc, x509_cert=cert, expect_references=3, expect_signature_policy=self.signature_policy
+        )
+        self.assertIsInstance(verify_results[1], XAdESVerifyResult)
+        self.assertTrue(hasattr(verify_results[1], "signed_properties"))
+
     def test_xades_interop_examples(self):
         error_conditions = {
             "altered": InvalidSignature,
@@ -1093,7 +1119,6 @@ class TestXAdES(unittest.TestCase, LoadExampleKeys):
             "corrupted-cert": etree.DocumentInvalid,  # FIXME - flaky validation
             "cert-v2-wrong-digest": InvalidDigest,
             "wrong-sign-cert-digest": InvalidDigest,
-            "nonconformant-X_BE_CONN_10": InvalidDigest,
             "sigPolStore-noDigest": InvalidInput,
         }
         for sig_file in glob(os.path.join(os.path.dirname(__file__), "xades", "*.xml")):
