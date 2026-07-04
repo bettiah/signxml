@@ -339,6 +339,17 @@ class XMLVerifier(XMLSignatureProcessor):
              config = SignatureConfiguration(location="./")
              XMLVerifier(...).verify(..., expect_config=config)
 
+         The ``location`` value describes the expected parent path for the ``ds:Signature`` element. SignXML
+         appends ``ds:Signature`` to this path internally. For example, if a SAML ``Response`` root contains a
+         signed ``Assertion`` child, configure verification like this:
+
+         .. code-block:: python
+
+             config = SignatureConfiguration(
+                 location="./{urn:oasis:names:tc:SAML:2.0:assertion}Assertion/"
+             )
+             XMLVerifier().verify(response_xml, x509_cert=cert, expect_config=config)
+
          Depending on the canonicalization method used by the signature, comments in the XML data may not be subject to
          signing, so may need to be untrusted. If so, they are excised from the return value of ``verify()``.
 

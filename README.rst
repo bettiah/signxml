@@ -100,6 +100,17 @@ Assuming ``metadata.xml`` contains SAML metadata for the assertion source:
     config = SignatureConfiguration(location="./")
     XMLVerifier(...).verify(..., expect_config=config)
 
+ The ``location`` value describes the expected parent path for the ``ds:Signature`` element. SignXML
+ appends ``ds:Signature`` to this path internally. For example, if a SAML ``Response`` root contains a
+ signed ``Assertion`` child, configure verification like this:
+
+ .. code-block:: python
+
+    config = SignatureConfiguration(
+        location="./{urn:oasis:names:tc:SAML:2.0:assertion}Assertion/"
+    )
+    XMLVerifier().verify(response_xml, x509_cert=cert, expect_config=config)
+
  **Recommended reading:** `W3C XML Signature Best Practices for Applications
  <http://www.w3.org/TR/xmldsig-bestpractices/#practices-applications>`_, `On Breaking SAML: Be Whoever You Want to Be
  <https://www.usenix.org/system/files/conference/usenixsecurity12/sec12-final91.pdf>`_, `Duo Finds SAML Vulnerabilities

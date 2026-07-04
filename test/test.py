@@ -344,6 +344,23 @@ class TestSignXML(unittest.TestCase, LoadExampleKeys):
 
             # TODO: negative: verify with wrong cert, wrong CA
 
+    def test_sign_rejects_invalid_x509_cert_input(self):
+        _, key = self.load_example_keys()
+        data = etree.parse(self.example_xml_files[0]).getroot()
+        invalid_pem = "-----BEGIN CERTIFICATE-----\nnot a certificate\n-----END CERTIFICATE-----"
+
+        invalid_cert_inputs = [
+            ("", "No PEM-encoded certificates found"),
+            ([], "No certificates found"),
+            ([""], "Invalid X.509 certificate"),
+            (invalid_pem, "Invalid X.509 certificate"),
+            ([invalid_pem], "Invalid X.509 certificate"),
+        ]
+        for cert, message in invalid_cert_inputs:
+            with self.subTest(cert=repr(cert)):
+                with self.assertRaisesRegex(InvalidInput, message):
+                    XMLSigner().sign(data, key=key, cert=cert)
+
     def test_x509_cert_chain_requires_digital_signature_key_usage(self):
         def make_key_usage(digital_signature=False, key_cert_sign=False, crl_sign=False):
             return x509.KeyUsage(
@@ -992,7 +1009,9 @@ class TestSignXML(unittest.TestCase, LoadExampleKeys):
         verifier = XMLVerifier()
         verifier.verify(signed, x509_cert=cert)
         config = SignatureConfiguration(location="./foo/bar/")
-        with self.assertRaisesRegex(InvalidInput, "Expected to find XML element Signature in data"):
+        with self.assertRaisesRegex(
+            InvalidInput, "Expected to find XML element Signature in data using XPath ./foo/bar/ds:Signature"
+        ):
             verifier.verify(signed, x509_cert=cert, expect_config=config)
         config = SignatureConfiguration(signature_methods=[])
         with self.assertRaisesRegex(InvalidInput, "Signature method RSA_SHA256 forbidden by configuration"):
