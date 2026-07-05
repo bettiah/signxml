@@ -2,6 +2,10 @@ Changes for v5.1.0 (2026-07-04)
 ===============================
 
 -  Implement point-in-time verification
+   - Breaking change: SignXML now raises an error if a trusted cert passed
+     in the x509_cert keyword argument has expired, restoring the behavior
+     that was in place before v4.0.0. See the documentation if you need to
+     verify signatures using expired certificates.
 -  xades: fix CertDigest handling
 -  Confirm certs passed to validate are X.509 formatted
 -  Clarify location parameter syntax
@@ -14,7 +18,7 @@ Changes for v5.0.1 (2026-06-23)
 Changes for v5.0.0 (2026-06-20)
 ===============================
 
--  X.509 certificate valitation now requires the provided certificate to
+-  X.509 certificate validation now requires the provided certificate to
    list digital signature as a key usage.
 
 Changes for v4.5.1 (2026-06-13)
