@@ -1,3 +1,11 @@
+Changes for v5.1.0 (2026-07-04)
+===============================
+
+-  Implement point-in-time verification
+-  xades: fix CertDigest handling
+-  Confirm certs passed to validate are X.509 formatted
+-  Clarify location parameter syntax
+
 Changes for v5.0.1 (2026-06-23)
 ===============================
 
