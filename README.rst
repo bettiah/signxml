@@ -128,6 +128,20 @@ Assuming ``metadata.xml`` contains SAML metadata for the assertion source:
  subject name that must be in the signing X.509 certificate given by the signature (verified as if it were a
  domain name), or ``ca_pem_file`` to give a custom CA.
 
+ To verify a signature at a specific point in time, such as an archived signature whose certificate has since
+ expired, configure ``verification_time``. The configured time is used for X.509 certificate validity checks,
+ including certificate chain validation and certificates supplied with ``x509_cert``:
+
+ .. code-block:: python
+
+    from datetime import datetime, timezone
+    from signxml import SignatureConfiguration, XMLVerifier
+
+    config = SignatureConfiguration(
+        verification_time=datetime(2018, 5, 28, 17, 0, tzinfo=timezone.utc)
+    )
+    verified_data = XMLVerifier().verify(data, expect_config=config).signed_xml
+
 Relaxing digital signature key usage extension validation for certificates
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 When verifying X.509 certificate chains, SignXML's default end-entity certificate policy requires the
