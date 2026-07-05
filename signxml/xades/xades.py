@@ -332,7 +332,9 @@ class XAdESVerifier(XAdESProcessor, XMLVerifier):
         if not any(candidate.public_bytes(Encoding.DER) == cert_der for candidate in certs):
             certs.append(cert)
 
-    def _find_signing_cert(self, verify_result: VerifyResult, certs: List[x509.Certificate]) -> Optional[x509.Certificate]:
+    def _find_signing_cert(
+        self, verify_result: VerifyResult, certs: List[x509.Certificate]
+    ) -> Optional[x509.Certificate]:
         if self.x509_cert is not None:
             if isinstance(self.x509_cert, x509.Certificate):
                 return self.x509_cert
